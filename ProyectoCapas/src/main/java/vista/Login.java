@@ -5,6 +5,21 @@
  */
 package vista;
 
+import datos.Conexion;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JRDesignQuery;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
+import javax.servlet.ServletOutputStream;
+
 /**
  *
  * @author visitante
@@ -31,9 +46,10 @@ public class Login extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtCodigoUsuario = new javax.swing.JTextField();
-        txtPasswordUsuario = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        txtPasswordUsuario = new javax.swing.JPasswordField();
+        btnReporte = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -51,16 +67,23 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        txtPasswordUsuario.setName("txtPasswordUsuario"); // NOI18N
+        jButton1.setLabel("Aceptar");
+
+        jButton2.setText("Cancelar");
+
+        txtPasswordUsuario.setText("123456");
         txtPasswordUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtPasswordUsuarioActionPerformed(evt);
             }
         });
 
-        jButton1.setLabel("Aceptar");
-
-        jButton2.setText("Cancelar");
+        btnReporte.setText("Reporte");
+        btnReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReporteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -73,17 +96,20 @@ public class Login extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(28, 28, 28)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnReporte)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton2))
-                            .addComponent(txtPasswordUsuario)
-                            .addComponent(txtCodigoUsuario))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel2))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jButton1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton2))
+                                    .addComponent(txtCodigoUsuario)
+                                    .addComponent(txtPasswordUsuario))))))
                 .addContainerGap(37, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -102,20 +128,45 @@ public class Login extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jButton2)
+                    .addComponent(btnReporte))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void txtCodigoUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoUsuarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodigoUsuarioActionPerformed
+
     private void txtPasswordUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordUsuarioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPasswordUsuarioActionPerformed
 
-    private void txtCodigoUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoUsuarioActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCodigoUsuarioActionPerformed
+    private void btnReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteActionPerformed
+        try {
+            Connection con = null;
+            try {
+                con = Conexion.getConnection();
+                //try {
+            } catch (SQLException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            //Llamada al Reporte
+            JasperDesign jdesign = JRXmlLoader.load("C:\\Users\\visitante\\Proyectos\\PrograIII\\didactica_java\\ProyectoCapas\\src\\main\\java\\reportes\\report1.jasper");
+            //Compilaci[on del Reporte
+            JasperReport jreport = JasperCompileManager.compileReport(jdesign);
+            // LLenado del reporte
+            JasperPrint jprint = JasperFillManager.fillReport(jreport, null, con);
+            // Visualizar reporte
+            JasperViewer.viewReport(jprint);
+
+        } catch (JRException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnReporteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -153,12 +204,13 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnReporte;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JTextField txtCodigoUsuario;
-    private javax.swing.JTextField txtPasswordUsuario;
+    private javax.swing.JPasswordField txtPasswordUsuario;
     // End of variables declaration//GEN-END:variables
 }
